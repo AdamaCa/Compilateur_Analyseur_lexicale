@@ -9,6 +9,8 @@ public class Etat {
     private String TokenType;
     private List<Etat> listeEpsilonTransitions = new ArrayList<>();
     private Map<Character , List<Etat>> transitions  = new HashMap<>();
+    private int priority = Integer.MAX_VALUE; 
+    
 
 
     public Etat() {
@@ -27,6 +29,11 @@ public class Etat {
     }
 
     //GETTERS
+
+
+    public int getPriority() { return priority; }
+    public void setPriority(int priority) { this.priority = priority; }
+
     public int getId() { return this.id;}
 
     public boolean estAcceptant() {return this.estAcceptant;}
