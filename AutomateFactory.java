@@ -3,30 +3,30 @@ package Compilateur_Analyse_Lexicale;
 
 public class AutomateFactory {
 
-    public Automate creerAutomateBasique(char c) {
-        Etat etat_initial = new Etat();
-        Etat etat_final = new Etat();
+    public static Automate creerAutomateBasique(char c) {
+        Etat etatInitial = new Etat();
+        Etat etatFinal = new Etat();
 
-        Automate a = new Automate(etat_initial, etat_final);
-        etat_initial.ajouter_transitions(c, etat_final);
+        Automate a = new Automate(etatInitial, etatFinal);
+        etatInitial.ajouterTransition(c, etatFinal);
         return a;
     }
 
     // Etoile de Kleene A*
     public static Automate creerEtoileKleene(Automate A)  {
-        Etat nv_initial = new Etat();
-        Etat nv_final = new Etat();
+        Etat nouvelInitial = new Etat();
+        Etat nouveauFinal = new Etat();
 
         A.getEtatAcceptant().setAcceptant(false);
 
-        nv_initial.ajouter_epsilon_transition(A.getEtatInitial());
-        nv_initial.ajouter_epsilon_transition(nv_final);
+        nouvelInitial.ajouterEpsilonTransition(A.getEtatInitial());
+        nouvelInitial.ajouterEpsilonTransition(nouveauFinal);
 
 
-        A.getEtatAcceptant().ajouter_epsilon_transition(nv_final);
-        A.getEtatAcceptant().ajouter_epsilon_transition(A.getEtatInitial());        
+        A.getEtatAcceptant().ajouterEpsilonTransition(nouveauFinal);
+        A.getEtatAcceptant().ajouterEpsilonTransition(A.getEtatInitial());        
 
-        return new Automate(nv_initial, nv_final);
+        return new Automate(nouvelInitial, nouveauFinal);
     }
 
 
@@ -35,7 +35,7 @@ public class AutomateFactory {
 
         A.getEtatAcceptant().setAcceptant(false);
 
-        A.getEtatAcceptant().ajouter_epsilon_transition(B.getEtatInitial());
+        A.getEtatAcceptant().ajouterEpsilonTransition(B.getEtatInitial());
 
         return new Automate(A.getEtatInitial(), B.getEtatAcceptant());
 
@@ -44,19 +44,19 @@ public class AutomateFactory {
     //Union A + B
     public static Automate creerUnionAutomate(Automate A , Automate B) {
 
-        Etat nv_initial = new Etat();
-        Etat nv_final = new Etat();
+        Etat nouvelInitial = new Etat();
+        Etat nouveauFinal = new Etat();
 
         A.getEtatAcceptant().setAcceptant(false);
-        A.getEtatAcceptant().ajouter_epsilon_transition(nv_final);
+        A.getEtatAcceptant().ajouterEpsilonTransition(nouveauFinal);
 
         B.getEtatAcceptant().setAcceptant(false);
-        B.getEtatAcceptant().ajouter_epsilon_transition(nv_final);
+        B.getEtatAcceptant().ajouterEpsilonTransition(nouveauFinal);
 
-        nv_initial.ajouter_epsilon_transition(A.getEtatInitial());
-        nv_initial.ajouter_epsilon_transition(B.getEtatInitial());
+        nouvelInitial.ajouterEpsilonTransition(A.getEtatInitial());
+        nouvelInitial.ajouterEpsilonTransition(B.getEtatInitial());
 
-        return new Automate(nv_initial, nv_final);
+        return new Automate(nouvelInitial, nouveauFinal);
 
     }
 

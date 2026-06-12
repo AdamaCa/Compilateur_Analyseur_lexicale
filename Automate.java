@@ -14,9 +14,12 @@ public class Automate {
         this.initial = initial;
         this.acceptant = acceptant;
         // Par défaut, la fin d'un sous-automate est marquée comme acceptante
-        this.acceptant.setAcceptant(true);
+        if (this.acceptant != null) {
+            this.acceptant.setAcceptant(true);
+        }
     }
 
     public Etat getEtatInitial() { return initial; }
     public Etat getEtatAcceptant() { return acceptant; }
+
 }

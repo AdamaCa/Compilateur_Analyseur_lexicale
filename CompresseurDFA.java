@@ -15,7 +15,7 @@ public class CompresseurDFA {
     public static Set<Etat> clotureEpsilon(Set<Etat> etats) {
         Set<Etat> clotureEtats = new HashSet<>(etats);
 
-        Stack<Etat> pile = new Stack();
+        Stack<Etat> pile = new Stack<>();
         pile.addAll(clotureEtats);
 
         while (!pile.isEmpty() ) {
@@ -58,60 +58,58 @@ public class CompresseurDFA {
 
 
 
-    public static Automate ConvertisseurVersDFA(Automate A,  Set<Character> alphabet) {
+    public static Automate convertirVersDFA(Automate A,  Set<Character> alphabet) {
 
-        Set<Etat> cloture_initial = clotureEpsilon(A.getEtatInitial());
+        Set<Etat> clotureInitial = clotureEpsilon(A.getEtatInitial());
 
-        Etat etat_initial_dfa = new Etat();
+        Etat etatInitialDfa = new Etat();
 
-        Map<Set<Etat> , Etat> dico_determinisation = new HashMap<>();
-        dico_determinisation.put(cloture_initial, etat_initial_dfa);
+        Map<Set<Etat> , Etat> dicoDeterminisation = new HashMap<>();
+        dicoDeterminisation.put(clotureInitial, etatInitialDfa);
 
         Stack<Set<Etat>> unvisited = new Stack<>();
-        unvisited.push(cloture_initial);
+        unvisited.push(clotureInitial);
 
 
         while(!unvisited.isEmpty()) {
 
-            Set<Etat> groupe_etat_courant = unvisited.pop();
-            Etat DfaEtatCourant = dico_determinisation.get(groupe_etat_courant);
+            Set<Etat> groupeEtatCourant = unvisited.pop();
+            Etat dfaEtatCourant = dicoDeterminisation.get(groupeEtatCourant);
 
 
-            String TokenPrioritaire = null;
+            String tokenPrioritaire = null;
             int priorite = Integer.MAX_VALUE ;
-            for (Etat e : groupe_etat_courant) {
+            for (Etat e : groupeEtatCourant) {
                 if (e.estAcceptant()) {
-                    DfaEtatCourant.setAcceptant(true);
-                }
-
-                if ( e.getPriority() <= priorite) {
-                    TokenPrioritaire = e.getToKenType();
+                    dfaEtatCourant.setAcceptant(true);
+                    if ( e.getPriority() <= priorite) {
+                    tokenPrioritaire = e.getTokenType();
                     priorite = e.getPriority();
                 }
+                }
+
+               
             }
 
-            DfaEtatCourant.setPriority(priorite);
-            DfaEtatCourant.setTokenType(TokenPrioritaire);
+            dfaEtatCourant.setPriority(priorite);
+            dfaEtatCourant.setTokenType(tokenPrioritaire);
 
 
             for (char c : alphabet) {
-                Set<Etat> etat_accesible = move(groupe_etat_courant, c);
-                Set<Etat> cloture_acessible = clotureEpsilon(etat_accesible);
+                Set<Etat> etatAccessible = move(groupeEtatCourant, c);
+                Set<Etat> clotureAccessible = clotureEpsilon(etatAccessible);
 
-                if (!dico_determinisation.containsKey(cloture_acessible)) {
-                    Etat DfaNouveauEtat = new Etat();
-                    dico_determinisation.put(cloture_acessible, DfaNouveauEtat);
-                    unvisited.push(cloture_acessible);
+                if (!dicoDeterminisation.containsKey(clotureAccessible)) {
+                    Etat dfaNouveauEtat = new Etat();
+                    dicoDeterminisation.put(clotureAccessible, dfaNouveauEtat);
+                    unvisited.push(clotureAccessible);
                 }
 
-                Etat e = dico_determinisation.get(cloture_acessible);
-                DfaEtatCourant.ajouter_transitions(c, e);
+                Etat e = dicoDeterminisation.get(clotureAccessible);
+                dfaEtatCourant.ajouterTransition(c, e);
             }
         }
     
-    return new Automate(etat_initial_dfa, null);
+    return new Automate(etatInitialDfa, null);
     }
 }
-
-
-
